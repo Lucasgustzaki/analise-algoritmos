@@ -1,0 +1,7 @@
+# compilation junk
+.mvn
+out
+
+# editor
+.vs-code
+.idea

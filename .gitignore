@@ -1,6 +1,7 @@
 # compilation junk
 .mvn
 out
+target
 
 # editor
 .vs-code

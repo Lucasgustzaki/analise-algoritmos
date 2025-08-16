@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DeliveryCalculatorTest {
 
-    private DeliveryCalculator calculator = new DeliveryCalculator(null);
+    private DeliveryCalculator calculator;
 
     @BeforeEach
     void setup() {

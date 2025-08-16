@@ -14,7 +14,9 @@ public final class Order {
         return products;
     }
 
-    public float getTotalWeight() {
-        throw new UnsupportedOperationException();
+    public double getTotalWeight() {
+        return products.stream()
+                .mapToDouble(Product::getWeight)
+                .sum();
     }
 }

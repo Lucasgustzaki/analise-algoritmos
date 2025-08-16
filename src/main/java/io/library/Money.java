@@ -12,6 +12,10 @@ public record Money(Currency currency, BigDecimal amount) {
         this(DEFAULT_CURRENCY, amount);
     }
 
+    public static Money of(final double amount) {
+        return new Money(BigDecimal.valueOf(amount));
+    }
+
     public static Money zero() {
         return new Money(DEFAULT_CURRENCY, BigDecimal.ZERO);
     }

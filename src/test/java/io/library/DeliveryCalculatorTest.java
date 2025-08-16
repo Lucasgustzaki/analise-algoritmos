@@ -79,9 +79,7 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", ofPrice(98), 0.8f)
             );
 
-            assertThrows(OrderNotAcceptedException.class, () -> {
-                calculator.calculateDelivery(order);
-            });
+            assertThrows(OrderNotAcceptedException.class, () -> calculator.calculateDelivery(order));
         }
     }
 

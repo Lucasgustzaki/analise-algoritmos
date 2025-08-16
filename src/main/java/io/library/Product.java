@@ -11,4 +11,8 @@ public final class Product {
         this.price = price;
         this.weight = weight;
     }
+
+    public float getWeight() {
+        return weight;
+    }
 }

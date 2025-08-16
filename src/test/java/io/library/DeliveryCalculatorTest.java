@@ -28,7 +28,7 @@ class DeliveryCalculatorTest {
 
         @Test
         void givenProductOfWeightZeroThenCostIsTen() {
-            Product book = makeProduct("Any Self-Awareness Book", ofPrice(0), 0.0f);
+            Product book = makeProduct("Self-Help Book", ofPrice(0), 0.0f);
 
             Order order = makeOrder(book);
 
@@ -51,8 +51,8 @@ class DeliveryCalculatorTest {
         @Test
         void givenOrderOfTotalWeightBelowOnePoundDeliveryCostIsTen() {
             Order order = makeOrder(
-                 makeProduct("Design Patters", ofPrice(210), 0.4f),
-                 makeProduct("The Pragmatic Programmer", ofPrice(98), 0.3f)
+                    makeProduct("Design Patters", ofPrice(210), 0.4f),
+                    makeProduct("The Pragmatic Programmer", ofPrice(98), 0.3f)
             );
 
             Money deliveryCost = calculator.calculateDelivery(order);
@@ -63,8 +63,8 @@ class DeliveryCalculatorTest {
         @Test
         void givenOrderFromOnePoundUpToTwoPoundsThenCostIsFifteen() {
             Order order = makeOrder(
-                 makeProduct("Design Patters", ofPrice(210), 0.6f),
-                 makeProduct("The Pragmatic Programmer", ofPrice(98), 0.5f)
+                    makeProduct("Design Patters", ofPrice(210), 0.6f),
+                    makeProduct("The Pragmatic Programmer", ofPrice(98), 0.5f)
             );
 
             Money deliveryCost = calculator.calculateDelivery(order);
@@ -75,8 +75,8 @@ class DeliveryCalculatorTest {
         @Test
         void givenTotalWeightAboveTwoPoundsThenThrowOrderNotAcceptedDueToWeight() {
             Order order = makeOrder(
-                 makeProduct("Design Patters", ofPrice(210), 1.4f),
-                 makeProduct("The Pragmatic Programmer", ofPrice(98), 0.8f)
+                    makeProduct("Design Patters", ofPrice(210), 1.4f),
+                    makeProduct("The Pragmatic Programmer", ofPrice(98), 0.8f)
             );
 
             assertThrows(OrderNotAcceptedException.class, () -> {
@@ -95,7 +95,7 @@ class DeliveryCalculatorTest {
 
         @Test
         void shouldReturnZeroForAnyOrderWeight() {
-            Product book = makeProduct("Book", ofPrice(100), anyWeight());
+            Product book = makeProduct("Management 3.0", ofPrice(100), anyWeight());
 
             Order order = makeOrder(book);
 
@@ -115,7 +115,7 @@ class DeliveryCalculatorTest {
 
         @Test
         void givenProductOfWeightZeroThenCostIsTwelveAndHalf() {
-            Product book = makeProduct("Any Self-Awareness Book", ofPrice(0), 0.0f);
+            Product book = makeProduct("Self-Help Book", ofPrice(0), 0.0f);
 
             Order order = makeOrder(book);
 
@@ -159,7 +159,7 @@ class DeliveryCalculatorTest {
 
         @Test
         void givenOrderAboveOneKiloThenCostIsFortysixAndHalfPlusAdditionalFees() {
-            Product book = makeProduct("Heavy Book", ofPrice(300), 1.2f);
+            Product book = makeProduct("Introduction to algorithms", ofPrice(300), 1.2f);
 
             Order order = makeOrder(book);
 
@@ -172,8 +172,8 @@ class DeliveryCalculatorTest {
         @Test
         void givenOrderOfOneAndHalfKiloThenCostIncludesAdditionalFees() {
             Order order = makeOrder(
-                    makeProduct("Book 1", ofPrice(200), 0.8f),
-                    makeProduct("Book 2", ofPrice(150), 0.7f)
+                    makeProduct("Crystal Clear", ofPrice(200), 0.8f),
+                    makeProduct("Grokking Algorithms", ofPrice(150), 0.7f)
             );
 
             Money deliveryCost = calculator.calculateDelivery(order);

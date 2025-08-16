@@ -1,7 +1,6 @@
 # compilation junk
-.mvn
-out
-target
+.gradle
+build
 
 # editor
 .vs-code

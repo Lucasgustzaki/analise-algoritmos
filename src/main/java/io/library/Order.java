@@ -10,13 +10,9 @@ public final class Order {
         this.products = List.of(products);
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public double getTotalWeight() {
+    public Weight getTotalWeight() {
         return products.stream()
-                .mapToDouble(Product::getWeight)
-                .sum();
+                .map(Product::getWeight)
+                .reduce(Weight.zero(), Weight::add);
     }
 }

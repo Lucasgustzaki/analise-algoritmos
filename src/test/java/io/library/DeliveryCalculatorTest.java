@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,55 +26,55 @@ class DeliveryCalculatorTest {
 
         @Test
         void givenProductOfWeightZeroThenCostIsTen() {
-            Product book = makeProduct("Self-Help Book", ofPrice(0), 0.0f);
+            Product book = makeProduct("Self-Help Book", Money.zero(), Weight.zero());
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(10), deliveryCost);
+            assertEquals(Money.of(10), deliveryCost);
         }
 
         @Test
-        void givenOneProductBelowOnePoundThenDeliveryCostIsTen() {
-            Product book = makeProduct("Clean Code", ofPrice(120), 0.5f);
+        void givenOneProductBelowOneKiloThenDeliveryCostIsTen() {
+            Product book = makeProduct("Clean Code", Money.of(120), Weight.grams(500));
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(10), deliveryCost);
+            assertEquals(Money.of(10), deliveryCost);
         }
 
         @Test
-        void givenOrderOfTotalWeightBelowOnePoundDeliveryCostIsTen() {
+        void givenOrderOfTotalWeightBelowOneKiloDeliveryCostIsTen() {
             Order order = makeOrder(
-                    makeProduct("Design Patters", ofPrice(210), 0.4f),
-                    makeProduct("The Pragmatic Programmer", ofPrice(98), 0.3f)
+                    makeProduct("Design Patters", Money.of(210), Weight.grams(400)),
+                    makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(300))
             );
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(10), deliveryCost);
+            assertEquals(Money.of(10), deliveryCost);
         }
 
         @Test
-        void givenOrderFromOnePoundUpToTwoPoundsThenCostIsFifteen() {
+        void givenOrderFromOneKiloUpToTwoKilosThenCostIsFifteen() {
             Order order = makeOrder(
-                    makeProduct("Design Patters", ofPrice(210), 0.6f),
-                    makeProduct("The Pragmatic Programmer", ofPrice(98), 0.5f)
+                    makeProduct("Design Patters", Money.of(210), Weight.grams(600)),
+                    makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(500))
             );
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(15), deliveryCost);
+            assertEquals(Money.of(15), deliveryCost);
         }
         
         @Test
-        void givenTotalWeightAboveTwoPoundsThenThrowOrderNotAcceptedDueToWeight() {
+        void givenTotalWeightAboveTwoKilosThenThrowOrderNotAcceptedDueToWeight() {
             Order order = makeOrder(
-                    makeProduct("Design Patters", ofPrice(210), 1.4f),
-                    makeProduct("The Pragmatic Programmer", ofPrice(98), 0.8f)
+                    makeProduct("Design Patters", Money.of(210), Weight.grams(1200)),
+                    makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(850))
             );
 
             assertThrows(OrderNotAcceptedException.class, () -> calculator.calculateDelivery(order));
@@ -93,7 +91,7 @@ class DeliveryCalculatorTest {
 
         @Test
         void shouldReturnZeroForAnyOrderWeight() {
-            Product book = makeProduct("Management 3.0", ofPrice(100), anyWeight());
+            Product book = makeProduct("Management 3.0", Money.of(100), anyWeight());
 
             Order order = makeOrder(book);
 
@@ -113,71 +111,75 @@ class DeliveryCalculatorTest {
 
         @Test
         void givenProductOfWeightZeroThenCostIsTwelveAndHalf() {
-            Product book = makeProduct("Self-Help Book", ofPrice(0), 0.0f);
+            Product book = makeProduct("Self-Help Book", Money.of(0), Weight.zero());
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(12.50), deliveryCost);
+            assertEquals(Money.of(12.50), deliveryCost);
         }
 
         @Test
         void givenOrderUpToFiveHundredGramsThenCostIsTwelveAndHalf() {
-            Product book = makeProduct("Clean Code", ofPrice(120), 0.5f);
+            Product book = makeProduct("Clean Code", Money.of(120), Weight.grams(500));
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(12.50), deliveryCost);
+            assertEquals(Money.of(12.50), deliveryCost);
         }
 
         @Test
         void givenOrderFromFiveHundredAndOneGramsToOneKiloThenCostIsTwenty() {
-            Product book = makeProduct("Design Patterns", ofPrice(210), 0.8f);
+            Product book = makeProduct("Design Patterns", Money.of(210), Weight.grams(800));
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(20.00), deliveryCost);
+            assertEquals(Money.of(20.00), deliveryCost);
         }
 
         @Test
         void givenOrderExactlyOneKiloThenCostIsTwenty() {
-            Product book = makeProduct("The Pragmatic Programmer", ofPrice(98), 1.0f);
+            Product book = makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(1000));
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            assertEquals(ofPrice(20.00), deliveryCost);
+            assertEquals(Money.of(20.00), deliveryCost);
         }
 
         @Test
-        void givenOrderAboveOneKiloThenCostIsFortysixAndHalfPlusAdditionalFees() {
-            Product book = makeProduct("Introduction to algorithms", ofPrice(300), 1.2f);
+        void givenOrderAboveOneKiloThenCostIsFortySixAndHalfPlusAdditionalCost() {
+            Product book = makeProduct("Introduction to algorithms", Money.of(300), Weight.grams(1200));
 
             Order order = makeOrder(book);
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            // 46.50 + 3.00 (200g additional = 2 * 100g * 1.50)
-            assertEquals(ofPrice(49.50), deliveryCost);
+            Money baseCost = Money.of(46.50);
+            Money additionalCost = Money.of(1.50 * 2);
+
+            assertEquals(baseCost.add(additionalCost), deliveryCost);
         }
 
         @Test
-        void givenOrderOfOneAndHalfKiloThenCostIncludesAdditionalFees() {
+        void givenOrderOfOneAndHalfKiloThenCostIncludesAdditionalCost() {
             Order order = makeOrder(
-                    makeProduct("Crystal Clear", ofPrice(200), 0.8f),
-                    makeProduct("Grokking Algorithms", ofPrice(150), 0.7f)
+                    makeProduct("Crystal Clear", Money.of(200), Weight.grams(800)),
+                    makeProduct("Grokking Algorithms", Money.of(150), Weight.grams(700))
             );
 
             Money deliveryCost = calculator.calculateDelivery(order);
 
-            // 46.50 + 7.50 (500g additional = 5 * 100g * 1.50)
-            assertEquals(ofPrice(54.00), deliveryCost);
+            Money baseCost = Money.of(46.50);
+            Money additionalCost = Money.of(1.50 * 5);
+
+            assertEquals(baseCost.add(additionalCost), deliveryCost);
         }
     }
 
@@ -185,15 +187,11 @@ class DeliveryCalculatorTest {
         return new Order(products);
     }
 
-    private Product makeProduct(final String name, final Money price, final float weight) {
+    private Product makeProduct(final String name, final Money price, final Weight weight) {
         return new Product(name, price, weight);
     }
 
-    private static Money ofPrice(double price) {
-        return new Money(BigDecimal.valueOf(price));
-    }
-
-    private static float anyWeight() {
-        return 1.0f; // Any positive weight for testing
+    private static Weight anyWeight() {
+        return Weight.grams(1000);
     }
 }

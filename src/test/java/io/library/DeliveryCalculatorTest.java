@@ -17,7 +17,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(PACDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(10), deliveryCost);
         }
@@ -28,7 +28,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(PACDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(10), deliveryCost);
         }
@@ -40,7 +40,7 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(300))
             );
 
-            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(PACDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(10), deliveryCost);
         }
@@ -52,7 +52,7 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(500))
             );
 
-            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(PACDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(15), deliveryCost);
         }
@@ -64,7 +64,7 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(850))
             );
 
-            assertThrows(OrderNotAcceptedException.class, () -> order.calculateDelivery(new PACDeliveryStrategy()));
+            assertThrows(OrderNotAcceptedException.class, () -> order.calculateDelivery(PACDeliveryStrategy.getInstance()));
         }
     }
 
@@ -77,7 +77,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new PickupStrategy());
+            Money deliveryCost = order.calculateDelivery(PickupStrategy.getInstance());
 
             assertEquals(Money.zero(), deliveryCost);
         }
@@ -92,7 +92,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(SedexDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(12.50), deliveryCost);
         }
@@ -103,7 +103,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(SedexDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(12.50), deliveryCost);
         }
@@ -114,7 +114,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(SedexDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(20.00), deliveryCost);
         }
@@ -125,7 +125,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(SedexDeliveryStrategy.getInstance());
 
             assertEquals(Money.of(20.00), deliveryCost);
         }
@@ -136,7 +136,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(SedexDeliveryStrategy.getInstance());
 
             Money baseCost = Money.of(46.50);
             Money additionalCost = Money.of(1.50 * 2);
@@ -151,7 +151,7 @@ class DeliveryCalculatorTest {
                     makeProduct("Grokking Algorithms", Money.of(150), Weight.grams(700))
             );
 
-            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
+            Money deliveryCost = order.calculateDelivery(SedexDeliveryStrategy.getInstance());
 
             Money baseCost = Money.of(46.50);
             Money additionalCost = Money.of(1.50 * 5);

@@ -2,6 +2,16 @@ package io.library;
 
 public final class PACDeliveryStrategy implements DeliveryStrategy {
 
+    private static final DeliveryStrategy INSTANCE = new PACDeliveryStrategy();
+
+    private PACDeliveryStrategy() {
+        // Private constructor to enforce singleton pattern
+    }
+
+    public static DeliveryStrategy getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public Money calculateDelivery(final Order order) {
         var weight = order.getTotalWeight();

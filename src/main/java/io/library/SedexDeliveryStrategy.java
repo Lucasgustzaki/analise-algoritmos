@@ -2,6 +2,16 @@ package io.library;
 
 public final class SedexDeliveryStrategy implements DeliveryStrategy {
 
+    private static final DeliveryStrategy INSTANCE = new SedexDeliveryStrategy();
+
+    private SedexDeliveryStrategy() {
+        // Singleton
+    }
+
+    public static DeliveryStrategy getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public Money calculateDelivery(final Order order) {
         Weight weight = order.getTotalWeight();

@@ -2,8 +2,9 @@ package io.library;
 
 public class Weight {
 
-    private static final Weight ZERO = Weight.grams(0);
     private static final String PRINT_FORMAT = "[ Weight %d GRAMS ]";
+
+    private static final Weight ZERO = Weight.grams(0);
 
     private final int value;
 

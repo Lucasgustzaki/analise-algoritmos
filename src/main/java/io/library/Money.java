@@ -18,7 +18,7 @@ public final class Money {
         this.amount = amount;
     }
 
-    public Money(final BigDecimal amount) {
+    private Money(final BigDecimal amount) {
         this(DEFAULT_CURRENCY, amount);
     }
 

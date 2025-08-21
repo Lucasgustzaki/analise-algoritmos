@@ -1,6 +1,5 @@
 package io.library;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -9,20 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DeliveryCalculatorTest {
 
-    private DeliveryCalculator calculator;
-
-    @BeforeEach
-    void setup() {
-        calculator = new DeliveryCalculator(null);
-    }
-
     @Nested
     class PACDeliveryStrategySuite {
-
-        @BeforeEach
-        void setup() {
-            calculator.setDeliveryStrategy(new PACDeliveryStrategy());
-        }
 
         @Test
         void givenProductOfWeightZeroThenCostIsTen() {
@@ -30,7 +17,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
 
             assertEquals(Money.of(10), deliveryCost);
         }
@@ -41,7 +28,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
 
             assertEquals(Money.of(10), deliveryCost);
         }
@@ -53,7 +40,7 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(300))
             );
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
 
             assertEquals(Money.of(10), deliveryCost);
         }
@@ -65,7 +52,7 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(500))
             );
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new PACDeliveryStrategy());
 
             assertEquals(Money.of(15), deliveryCost);
         }
@@ -77,17 +64,12 @@ class DeliveryCalculatorTest {
                     makeProduct("The Pragmatic Programmer", Money.of(98), Weight.grams(850))
             );
 
-            assertThrows(OrderNotAcceptedException.class, () -> calculator.calculateDelivery(order));
+            assertThrows(OrderNotAcceptedException.class, () -> order.calculateDelivery(new PACDeliveryStrategy()));
         }
     }
 
     @Nested
     class PickupStrategySuite {
-
-        @BeforeEach
-        void setup() {
-            calculator.setDeliveryStrategy(new PickupStrategy());
-        }
 
         @Test
         void shouldReturnZeroForAnyOrderWeight() {
@@ -95,7 +77,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new PickupStrategy());
 
             assertEquals(Money.zero(), deliveryCost);
         }
@@ -104,18 +86,13 @@ class DeliveryCalculatorTest {
     @Nested
     class SEDEXDeliveryStrategySuite {
 
-        @BeforeEach
-        void setup() {
-            calculator.setDeliveryStrategy(new SedexDeliveryStrategy());
-        }
-
         @Test
         void givenProductOfWeightZeroThenCostIsTwelveAndHalf() {
             Product book = makeProduct("Self-Help Book", Money.of(0), Weight.zero());
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
 
             assertEquals(Money.of(12.50), deliveryCost);
         }
@@ -126,7 +103,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
 
             assertEquals(Money.of(12.50), deliveryCost);
         }
@@ -137,7 +114,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
 
             assertEquals(Money.of(20.00), deliveryCost);
         }
@@ -148,7 +125,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
 
             assertEquals(Money.of(20.00), deliveryCost);
         }
@@ -159,7 +136,7 @@ class DeliveryCalculatorTest {
 
             Order order = makeOrder(book);
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
 
             Money baseCost = Money.of(46.50);
             Money additionalCost = Money.of(1.50 * 2);
@@ -174,7 +151,7 @@ class DeliveryCalculatorTest {
                     makeProduct("Grokking Algorithms", Money.of(150), Weight.grams(700))
             );
 
-            Money deliveryCost = calculator.calculateDelivery(order);
+            Money deliveryCost = order.calculateDelivery(new SedexDeliveryStrategy());
 
             Money baseCost = Money.of(46.50);
             Money additionalCost = Money.of(1.50 * 5);

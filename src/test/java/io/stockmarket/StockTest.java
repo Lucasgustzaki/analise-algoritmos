@@ -3,6 +3,7 @@ package io.stockmarket;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StockTest {
 
@@ -10,7 +11,7 @@ class StockTest {
     void whenOrderIsPushedDoNothing() {
         Stock stock = createStock();
 
-        stock.pushOrder(new Order());
+        stock.pushOrder(Order.purchase());
     }
 
     @Test
@@ -57,15 +58,15 @@ class StockTest {
 
         stock.registerInvestor(investor);
 
-        stock.pushOrder(purchase(24));
-        stock.pushOrder(sell(24));
+        stock.pushOrder(Order.purchase());
+        stock.pushOrder(Order.sell());
 
         assertThatWasNotified(investor);
     }
 
     private void pushMultipleOrders(Stock stock, int count) {
         for (int i = 0; i < count; i++) {
-            stock.pushOrder(new Order());
+            stock.pushOrder(Order.sell());
         }
     }
 
@@ -86,14 +87,6 @@ class StockTest {
     }
 
     private void assertThatWasNotified(Investor investor) {
-        assertFalse(investor.wasNotified(), "Investor should not have been notified");
-    }
-
-    private Order sell(int price) {
-        return new Order();
-    }
-
-    private Order purchase(int price) {
-        return new Order();
+        assertTrue(investor.wasNotified(), "Investor should not have been notified");
     }
 }

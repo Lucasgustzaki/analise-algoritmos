@@ -15,4 +15,8 @@ public final class Order {
                 .map(Product::getWeight)
                 .reduce(Weight.zero(), Weight::add);
     }
+
+    public Money calculateDelivery(final DeliveryStrategy strategy) {
+        return strategy.calculateDelivery(this);
+    }
 }

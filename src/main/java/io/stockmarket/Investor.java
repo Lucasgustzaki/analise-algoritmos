@@ -1,14 +1,25 @@
 package io.stockmarket;
 
+import java.util.Stack;
+
 public class Investor {
 
-    private boolean notified;
+    private final Stack<StockMarketNotification> notifications;
+
+    public Investor() {
+        this.notifications = new Stack<>();
+    }
 
     public boolean wasNotified() {
-        return notified;
+        if (notifications.isEmpty()) {
+            return false;
+        }
+
+        notifications.pop();
+        return true;
     }
 
     public void notifyOnStock() {
-        this.notified = true;
+        notifications.push(new StockMarketNotification());
     }
 }

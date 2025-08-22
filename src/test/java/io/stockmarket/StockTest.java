@@ -77,6 +77,55 @@ class StockTest {
         assertThatWasNotNotified(investor);
     }
 
+    @Test
+    void whenMatchOccursLaterOnThenInvestorIsNotifiedAsWell() {
+        Investor investor = John();
+        Stock stock = createStock();
+
+        stock.registerInvestor(investor);
+
+        stock.pushOrder(Order.purchase(24));
+        stock.pushOrder(Order.sell(32));
+
+        assertThatWasNotNotified(investor);
+
+        stock.pushOrder(Order.sell(24));
+
+        assertThatWasNotified(investor);
+    }
+
+    @Test
+    void investorShouldNotBeNotifiedTwiceIfRegisteredTwice() {
+        Investor investor = John();
+        Stock stock = createStock();
+
+        stock.registerInvestor(investor);
+        stock.registerInvestor(investor);
+
+        stock.pushOrder(Order.purchase(24));
+        stock.pushOrder(Order.sell(24));
+
+        assertThatWasNotified(investor);
+        assertThatWasNotNotified(investor);
+    }
+
+    @Test
+    void whenMatchOccursTwiceForSameOrderThenInvestorIsNotNotified() {
+        Investor investor = John();
+        Stock stock = createStock();
+
+        stock.registerInvestor(investor);
+
+        stock.pushOrder(Order.sell(24));
+        stock.pushOrder(Order.purchase(24));
+
+        assertThatWasNotified(investor);
+
+        stock.pushOrder(Order.sell(24));
+
+        assertThatWasNotNotified(investor);
+    }
+
     private void pushMultipleOrders(Stock stock, int count) {
         for (int i = 0; i < count; i++) {
             stock.pushOrder(Order.sell(32));

@@ -1,17 +1,15 @@
 package io.stockmarket;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class Stock {
 
     private final List<Order> orders;
-    private final List<Investor> investors;
+    private final Set<Investor> investors;
 
     public Stock() {
-        this.investors = new ArrayList<>();
+        this.investors = new HashSet<>();
         this.orders = new ArrayList<>();
     }
 
@@ -20,30 +18,27 @@ public class Stock {
     }
 
     public void pushOrder(final Order order) {
+        orders.add(order);
+
         if (isMatch(order)) notifyInvestors();
-        else orders.add(order);
     }
 
     private boolean isMatch(Order order) {
-        return order.isSell() ?
-                isSellMatch(order) :
-                isPurchaseMatch(order);
+        return order.isSell()
+                ? findMatch(order, Order::isPurchase)
+                : findMatch(order, Order::isSell);
     }
 
-    private boolean isSellMatch(Order sellOrder) {
-        Optional<Order> purchaseOrder = orders.stream()
-                .filter(Order::isPurchase)
-                .filter(isSamePrice(sellOrder))
-                .findFirst();
-
-        return purchaseOrder.isPresent();
-    }
-
-    private boolean isPurchaseMatch(Order purchaseOrder) {
+    private boolean findMatch(Order purchaseOrder, Predicate<Order> isSell) {
         Optional<Order> sellOrder = orders.stream()
-                .filter(Order::isSell)
+                .filter(isSell)
                 .filter(isSamePrice(purchaseOrder))
                 .findFirst();
+
+        if (sellOrder.isPresent()) {
+            orders.remove(sellOrder.get());
+            orders.remove(purchaseOrder);
+        }
 
         return sellOrder.isPresent();
     }

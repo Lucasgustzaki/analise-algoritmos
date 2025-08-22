@@ -1,40 +1,70 @@
 package io.stockmarket;
 
-public class Order {
+public sealed abstract class Order permits Order.Sell, Order.Purchase {
 
+    private final Stock stock;
     private final int price;
-    private final Type type;
 
-    private Order(final int price, final Type type) {
+    private Order(Stock stock, final int price) {
+        this.stock = stock;
         this.price = price;
-        this.type = type;
     }
 
-    public static Order sell(int price) {
-        return new Order(price, Type.SELL);
+    public static Order sell(int price, Stock stock) {
+        return new Sell(price, stock);
     }
 
-    public static Order purchase(int price) {
-        return new Order(price, Type.PURCHASE);
+    public static Order purchase(int price, Stock stock) {
+        return new Purchase(price, stock);
     }
 
-    public Type type() {
-        return type;
-    }
+    public abstract boolean isSell();
 
-    public boolean isSell() {
-        return type == Type.SELL;
-    }
+    public abstract boolean isPurchase();
 
-    public boolean isPurchase() {
-        return type == Type.PURCHASE;
-    }
-
-    public int price() {
+    public int getPrice() {
         return price;
     }
 
-    private enum Type {
-        SELL, PURCHASE
+    public Stock getStock() {
+        return stock;
+    }
+
+    public void updateStockPrice() {
+        stock.updatePrice(price);
+    }
+
+    public final static class Sell extends Order {
+
+        private Sell(int price, Stock stock) {
+            super(stock, price);
+        }
+
+        @Override
+        public boolean isSell() {
+            return true;
+        }
+
+        @Override
+        public boolean isPurchase() {
+            return false;
+        }
+    }
+
+    public final static class Purchase extends Order {
+
+        private Purchase(int price, Stock stock) {
+            super(stock, price);
+        }
+
+        @Override
+        public boolean isSell() {
+            return false;
+        }
+
+        @Override
+        public boolean isPurchase() {
+            return true;
+        }
     }
 }

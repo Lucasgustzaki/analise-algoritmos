@@ -2,12 +2,16 @@ package io.stockmarket;
 
 import java.util.Stack;
 
-public class Investor {
+public final class Investor {
 
-    private final Stack<StockMarketNotification> notifications;
+    private final Stack<Notification> notifications;
 
     public Investor() {
         this.notifications = new Stack<>();
+    }
+
+    public void sendNotification(final Stock stock) {
+        notifications.push(new Notification(stock));
     }
 
     public boolean wasNotified() {
@@ -17,9 +21,5 @@ public class Investor {
 
         notifications.pop();
         return true;
-    }
-
-    public void notifyOnStock() {
-        notifications.push(new StockMarketNotification());
     }
 }

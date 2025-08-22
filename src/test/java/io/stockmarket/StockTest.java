@@ -1,52 +1,64 @@
 package io.stockmarket;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StockTest {
 
+    private StockMarket stockMarket;
+
+    @BeforeEach
+    void setUp() {
+        stockMarket = new StockMarket();
+    }
+
     @Test
     void whenOrderIsPushedDoNothing() {
-        Stock stock = createStock();
+        Stock stock = Stock.of(anyPrice());
 
-        stock.pushOrder(Order.purchase(24));
+        stockMarket.pushOrder(Order.purchase(24, stock));
     }
 
     @Test
     void whenMultipleOrdersArePushedDoNothing() {
-        Stock stock = createStock();
-
-        pushMultipleOrders(stock, anyCount());
+        pushMultipleOrdersForStock(Stock.of(anyPrice()), anyCount());
     }
 
     @Test
     void whenInvestorIsRegisteredThenDoNothing() {
-        Stock stock = createStock();
-
-        stock.registerInvestor(John());
+        stockMarket.registerInvestor(John());
     }
 
     @Test
     void whenInvestorIsRegisteredThenIsNotNotified() {
         Investor investor = John();
 
-        Stock stock = createStock();
-
-        stock.registerInvestor(investor);
+        stockMarket.registerInvestor(investor);
 
         assertThatWasNotNotified(investor);
     }
 
     @Test
+    void whenMultipleInvestorsAreRegisteredThenNoIsNotified() {
+        Investor john = John();
+        Investor carl = Carl();
+
+        stockMarket.registerInvestor(john);
+        stockMarket.registerInvestor(carl);
+
+        assertThatWasNotNotified(john);
+        assertThatWasNotNotified(carl);
+    }
+
+    @Test
     void whenInvestorIsRegisteredAndNoMatchOnStockMarketThenInvestorIsNotNotified() {
         Investor investor = John();
-        Stock stock = createStock();
 
-        stock.registerInvestor(investor);
+        stockMarket.registerInvestor(investor);
 
-        pushMultipleOrders(stock, anyCount());
+        pushMultipleOrdersForStock(Stock.of(anyPrice()), anyCount());
 
         assertThatWasNotNotified(investor);
     }
@@ -54,12 +66,13 @@ class StockTest {
     @Test
     void whenInvestorIsRegisteredAndMatchOnStockMarketThenInvestorIsNotified() {
         Investor investor = John();
-        Stock stock = createStock();
 
-        stock.registerInvestor(investor);
+        stockMarket.registerInvestor(investor);
 
-        stock.pushOrder(Order.purchase(24));
-        stock.pushOrder(Order.sell(24));
+        Stock stock = Stock.of(anyPrice());
+
+        stockMarket.pushOrder(Order.purchase(24, stock));
+        stockMarket.pushOrder(Order.sell(24, stock));
 
         assertThatWasNotified(investor);
     }
@@ -67,12 +80,12 @@ class StockTest {
     @Test
     void whenInvestorIsRegisterButNoMatchOnStocksPriceThenInvestorIsNotNotified() {
         Investor investor = John();
-        Stock stock = createStock();
+        Stock stock = Stock.of(anyPrice());
 
-        stock.registerInvestor(investor);
+        stockMarket.registerInvestor(investor);
 
-        stock.pushOrder(Order.purchase(24));
-        stock.pushOrder(Order.sell(32));
+        stockMarket.pushOrder(Order.purchase(24, stock));
+        stockMarket.pushOrder(Order.sell(32, stock));
 
         assertThatWasNotNotified(investor);
     }
@@ -80,16 +93,17 @@ class StockTest {
     @Test
     void whenMatchOccursLaterOnThenInvestorIsNotifiedAsWell() {
         Investor investor = John();
-        Stock stock = createStock();
 
-        stock.registerInvestor(investor);
+        Stock stock = Stock.of(anyPrice());
 
-        stock.pushOrder(Order.purchase(24));
-        stock.pushOrder(Order.sell(32));
+        stockMarket.registerInvestor(investor);
+
+        stockMarket.pushOrder(Order.purchase(24, stock));
+        stockMarket.pushOrder(Order.sell(32, stock));
 
         assertThatWasNotNotified(investor);
 
-        stock.pushOrder(Order.sell(24));
+        stockMarket.pushOrder(Order.sell(24, stock));
 
         assertThatWasNotified(investor);
     }
@@ -97,13 +111,14 @@ class StockTest {
     @Test
     void investorShouldNotBeNotifiedTwiceIfRegisteredTwice() {
         Investor investor = John();
-        Stock stock = createStock();
 
-        stock.registerInvestor(investor);
-        stock.registerInvestor(investor);
+        Stock stock = Stock.of(anyPrice());
 
-        stock.pushOrder(Order.purchase(24));
-        stock.pushOrder(Order.sell(24));
+        stockMarket.registerInvestor(investor);
+        stockMarket.registerInvestor(investor);
+
+        stockMarket.pushOrder(Order.purchase(24, stock));
+        stockMarket.pushOrder(Order.sell(24, stock));
 
         assertThatWasNotified(investor);
         assertThatWasNotNotified(investor);
@@ -112,43 +127,83 @@ class StockTest {
     @Test
     void whenMatchOccursTwiceForSameOrderThenInvestorIsNotNotified() {
         Investor investor = John();
-        Stock stock = createStock();
 
-        stock.registerInvestor(investor);
+        Stock stock = Stock.of(anyPrice());
 
-        stock.pushOrder(Order.sell(24));
-        stock.pushOrder(Order.purchase(24));
+        stockMarket.registerInvestor(investor);
+
+        stockMarket.pushOrder(Order.sell(24, stock));
+        stockMarket.pushOrder(Order.purchase(24, stock));
 
         assertThatWasNotified(investor);
 
-        stock.pushOrder(Order.sell(24));
+        stockMarket.pushOrder(Order.sell(24, stock));
 
         assertThatWasNotNotified(investor);
     }
 
-    private void pushMultipleOrders(Stock stock, int count) {
-        for (int i = 0; i < count; i++) {
-            stock.pushOrder(Order.sell(32));
-        }
+    @Test
+    void whenMatchOccursThenStockPriceIsChanged() {
+        Investor investor = John();
+
+        Stock stock = Stock.of(anyPrice());
+
+        stockMarket.registerInvestor(investor);
+
+        stockMarket.pushOrder(Order.purchase(24, stock));
+        stockMarket.pushOrder(Order.sell(24, stock));
+
+        assertThatWasNotified(investor);
+
+        assertEquals(24, stock.getPrice());
     }
 
-    private int anyCount() {
-        return 10;
+    @Test
+    void whenMatchOccursThenStockPriceIsTheLastMatch() {
+        Investor investor = John();
+
+        Stock stock = Stock.of(anyPrice());
+
+        stockMarket.registerInvestor(investor);
+
+        stockMarket.pushOrder(Order.purchase(24, stock));
+        stockMarket.pushOrder(Order.sell(24, stock));
+
+        stockMarket.pushOrder(Order.purchase(32, stock));
+        stockMarket.pushOrder(Order.sell(32, stock));
+
+        assertThatWasNotified(investor);
+
+        assertEquals(32, stock.getPrice());
+    }
+
+    private void pushMultipleOrdersForStock(final Stock stock, final int count) {
+        for (int i = 0; i < count; i++) {
+            stockMarket.pushOrder(Order.sell(anyPrice(), stock));
+        }
     }
 
     private Investor John() {
         return new Investor();
     }
 
-    private Stock createStock() {
-        return new Stock();
+    private Investor Carl() {
+        return new Investor();
     }
 
-    private void assertThatWasNotNotified(Investor investor) {
+    private int anyPrice() {
+        return 0;
+    }
+
+    private int anyCount() {
+        return 10;
+    }
+
+    private void assertThatWasNotNotified(final Investor investor) {
         assertFalse(investor.wasNotified(), "Investor should not have been notified");
     }
 
-    private void assertThatWasNotified(Investor investor) {
+    private void assertThatWasNotified(final Investor investor) {
         assertTrue(investor.wasNotified(), "Investor should not have been notified");
     }
 }

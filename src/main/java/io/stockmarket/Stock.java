@@ -1,53 +1,44 @@
 package io.stockmarket;
 
-import java.util.*;
-import java.util.function.Predicate;
-
 public class Stock {
 
-    private final List<Order> orders;
-    private final Set<Investor> investors;
+    private final StockCode code;
+    private int price;
 
-    public Stock() {
-        this.investors = new HashSet<>();
-        this.orders = new ArrayList<>();
+    private Stock(final StockCode code, final int price) {
+        this.code = code;
+        this.price = price;
     }
 
-    public void registerInvestor(final Investor investor) {
-        investors.add(investor);
+    public static Stock of(int price) {
+        return new Stock(StockCode.DEFAULT, price);
     }
 
-    public void pushOrder(final Order order) {
-        orders.add(order);
-
-        if (isMatch(order)) notifyInvestors();
+    protected void updatePrice(int newPrice) {
+        this.price = newPrice;
     }
 
-    private boolean isMatch(Order order) {
-        return order.isSell()
-                ? findMatch(order, Order::isPurchase)
-                : findMatch(order, Order::isSell);
+    public int getPrice() {
+        return price;
     }
 
-    private boolean findMatch(Order purchaseOrder, Predicate<Order> isSell) {
-        Optional<Order> sellOrder = orders.stream()
-                .filter(isSell)
-                .filter(isSamePrice(purchaseOrder))
-                .findFirst();
+    public StockCode getCode() {
+        return code;
+    }
 
-        if (sellOrder.isPresent()) {
-            orders.remove(sellOrder.get());
-            orders.remove(purchaseOrder);
+    public static final class StockCode {
+
+        private static final StockCode DEFAULT = new StockCode("DEFAULT");
+
+        private final String name;
+
+        public StockCode(final String name) {
+            this.name = name.trim().toUpperCase();
         }
 
-        return sellOrder.isPresent();
-    }
-
-    private Predicate<Order> isSamePrice(Order sellOrder) {
-        return (order) -> sellOrder.price() == order.price();
-    }
-
-    private void notifyInvestors() {
-        investors.forEach(Investor::notifyOnStock);
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }

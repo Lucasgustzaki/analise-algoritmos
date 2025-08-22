@@ -2,19 +2,19 @@ package io.stockmarket;
 
 public sealed abstract class Order permits Order.Sell, Order.Purchase {
 
+    private final Money orderPrice;
     private final Stock stock;
-    private final int price;
 
-    private Order(Stock stock, final int price) {
+    private Order(final Stock stock, final Money orderPrice) {
+        this.orderPrice = orderPrice;
         this.stock = stock;
-        this.price = price;
     }
 
-    public static Order sell(int price, Stock stock) {
+    public static Order sell(Money price, Stock stock) {
         return new Sell(price, stock);
     }
 
-    public static Order purchase(int price, Stock stock) {
+    public static Order purchase(Money price, Stock stock) {
         return new Purchase(price, stock);
     }
 
@@ -22,8 +22,8 @@ public sealed abstract class Order permits Order.Sell, Order.Purchase {
 
     public abstract boolean isPurchase();
 
-    public int getPrice() {
-        return price;
+    public Money getPrice() {
+        return orderPrice;
     }
 
     public Stock getStock() {
@@ -31,12 +31,12 @@ public sealed abstract class Order permits Order.Sell, Order.Purchase {
     }
 
     public void updateStockPrice() {
-        stock.updatePrice(price);
+        stock.updatePrice(orderPrice);
     }
 
     public final static class Sell extends Order {
 
-        private Sell(int price, Stock stock) {
+        private Sell(Money price, Stock stock) {
             super(stock, price);
         }
 
@@ -53,7 +53,7 @@ public sealed abstract class Order permits Order.Sell, Order.Purchase {
 
     public final static class Purchase extends Order {
 
-        private Purchase(int price, Stock stock) {
+        private Purchase(Money price, Stock stock) {
             super(stock, price);
         }
 

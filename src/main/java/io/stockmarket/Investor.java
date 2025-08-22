@@ -20,6 +20,7 @@ public final class Investor {
         }
 
         notifications.pop();
+
         return true;
     }
 }

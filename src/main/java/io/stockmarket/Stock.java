@@ -3,22 +3,23 @@ package io.stockmarket;
 public class Stock {
 
     private final StockCode code;
-    private int price;
 
-    private Stock(final StockCode code, final int price) {
+    private Money price;
+
+    private Stock(final StockCode code, final Money price) {
         this.code = code;
         this.price = price;
     }
 
-    public static Stock of(int price) {
+    public static Stock of(final Money price) {
         return new Stock(StockCode.DEFAULT, price);
     }
 
-    protected void updatePrice(int newPrice) {
+    protected void updatePrice(final Money newPrice) {
         this.price = newPrice;
     }
 
-    public int getPrice() {
+    public Money getPrice() {
         return price;
     }
 

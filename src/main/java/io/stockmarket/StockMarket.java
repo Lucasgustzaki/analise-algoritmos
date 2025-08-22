@@ -50,7 +50,7 @@ public final class StockMarket {
     }
 
     private Predicate<Order> isSamePrice(final Order anOrder) {
-        return (order) -> anOrder.getPrice() == order.getPrice();
+        return (order) -> anOrder.getPrice().equals(order.getPrice());
     }
 
     private void notifyInvestorsAboutStockChange(final Stock stock) {

@@ -11,7 +11,7 @@ class StockTest {
     void whenOrderIsPushedDoNothing() {
         Stock stock = createStock();
 
-        stock.pushOrder(Order.purchase());
+        stock.pushOrder(Order.purchase(24));
     }
 
     @Test
@@ -58,15 +58,28 @@ class StockTest {
 
         stock.registerInvestor(investor);
 
-        stock.pushOrder(Order.purchase());
-        stock.pushOrder(Order.sell());
+        stock.pushOrder(Order.purchase(24));
+        stock.pushOrder(Order.sell(24));
 
         assertThatWasNotified(investor);
     }
 
+    @Test
+    void whenInvestorIsRegisterButNoMatchOnStocksPriceThenInvestorIsNotNotified() {
+        Investor investor = John();
+        Stock stock = createStock();
+
+        stock.registerInvestor(investor);
+
+        stock.pushOrder(Order.purchase(24));
+        stock.pushOrder(Order.sell(32));
+
+        assertThatWasNotNotified(investor);
+    }
+
     private void pushMultipleOrders(Stock stock, int count) {
         for (int i = 0; i < count; i++) {
-            stock.pushOrder(Order.sell());
+            stock.pushOrder(Order.sell(32));
         }
     }
 

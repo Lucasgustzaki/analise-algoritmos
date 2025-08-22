@@ -2,18 +2,20 @@ package io.stockmarket;
 
 public class Order {
 
+    private final int price;
     private final Type type;
 
-    private Order(Type type) {
+    private Order(final int price, final Type type) {
+        this.price = price;
         this.type = type;
     }
 
-    public static Order sell() {
-        return new Order(Type.SELL);
+    public static Order sell(int price) {
+        return new Order(price, Type.SELL);
     }
 
-    public static Order purchase() {
-        return new Order(Type.PURCHASE);
+    public static Order purchase(int price) {
+        return new Order(price, Type.PURCHASE);
     }
 
     public Type type() {
@@ -21,7 +23,15 @@ public class Order {
     }
 
     public boolean isSell() {
-        return false;
+        return type == Type.SELL;
+    }
+
+    public boolean isPurchase() {
+        return type == Type.PURCHASE;
+    }
+
+    public int price() {
+        return price;
     }
 
     private enum Type {

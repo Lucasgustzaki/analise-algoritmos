@@ -8,7 +8,7 @@ public class Investor {
         return notified;
     }
 
-    public void notify(Stock stock) {
-        notified = true;
+    public void notifyOnStock() {
+        this.notified = true;
     }
 }

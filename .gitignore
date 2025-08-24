@@ -1,0 +1,7 @@
+# compilation junk
+.gradle
+build
+
+# editor
+.vs-code
+.idea

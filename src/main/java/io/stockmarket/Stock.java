@@ -1,5 +1,7 @@
 package io.stockmarket;
 
+import java.util.Objects;
+
 public final class Stock {
 
     private final StockCode code;
@@ -11,8 +13,8 @@ public final class Stock {
         this.price = price;
     }
 
-    public static Stock of(final Money price) {
-        return new Stock(StockCode.DEFAULT, price);
+    public static Stock of(final String code, final Money price) {
+        return new Stock(new StockCode(code), price);
     }
 
     void updatePrice(final Money newPrice) {
@@ -27,14 +29,26 @@ public final class Stock {
         return code;
     }
 
-    private static final class StockCode {
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        return Objects.equals(code, stock.code);
+    }
 
-        private static final StockCode DEFAULT = new StockCode("DEFAULT");
+    public static final class StockCode {
 
         private final String name;
 
         public StockCode(final String name) {
             this.name = name.trim().toUpperCase();
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            StockCode stockCode = (StockCode) o;
+            return Objects.equals(name, stockCode.name);
         }
 
         @Override

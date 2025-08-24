@@ -1,5 +1,6 @@
 package io.stockmarket;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -11,6 +12,14 @@ public final class Investor {
     public Investor(final String name) {
         this.name = name;
         this.notifications = new Stack<>();
+    }
+
+    public Order newSellOrder(final Money money, final Stock stock) {
+        return Order.sell(this, money, stock);
+    }
+
+    public Order newPurchaseOrder(final Money money, final Stock stock) {
+        return Order.purchase(this, money, stock);
     }
 
     public void sendNotification(final Stock stock) {
@@ -25,5 +34,17 @@ public final class Investor {
         }
 
         return Optional.of(notifications.pop());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Investor investor = (Investor) o;
+        return Objects.equals(name, investor.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

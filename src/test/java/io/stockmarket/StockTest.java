@@ -7,58 +7,50 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StockTest {
+    
+    private Stock PETR4;
+    private Stock ITUB4;
 
     private StockMarket stockMarket;
 
     @BeforeEach
     void setUp() {
+        PETR4 = Stock.of("PETR4", anyPrice());
+        ITUB4 = Stock.of("ITUB4", anyPrice());
+
         stockMarket = new StockMarket();
-    }
-
-    @Test
-    void whenInvestorIsRegisteredThenIsNotNotifiedAsNoUpdatesOnStockMarket() {
-        Investor investor = John();
-
-        stockMarket.registerInvestor(investor);
-
-        assertWasNotNotified(investor);
-    }
-
-    @Test
-    void whenMultipleInvestorsAreRegisteredThenNoOneIsNotifiedAsNoUpdatesOnStockMarket() {
-        Investor john = John();
-        Investor carl = Carl();
-
-        stockMarket.registerInvestor(john);
-        stockMarket.registerInvestor(carl);
-
-        assertWasNotNotified(john);
-        assertWasNotNotified(carl);
     }
 
     @Test
     void whenInvestorIsRegisteredAndMatchOnStockMarketThenInvestorIsNotified() {
         Investor investor = John();
 
-        stockMarket.registerInvestor(investor);
+        stockMarket.registerInvestorOnStock(investor, PETR4);
 
-        Stock stock = Stock.of(anyPrice());
-
-        makeStockMatch(Carl(), stock, anyPrice());
+        makeStockMatch(PETR4, anyPrice());
 
         assertWasNotified(investor);
+    }
+    
+    @Test
+    void whenInvestorIsRegisteredButMatchOccursForDifferentStockThenIsNotNotified() {
+        Investor investor = John();
+
+        stockMarket.registerInvestorOnStock(investor, ITUB4);
+
+        makeStockMatch(PETR4, anyPrice());
+
+        assertWasNotNotified(investor);
     }
 
     @Test
     void whenInvestorIsRegisterButNoMatchOnStocksPriceThenInvestorIsNotNotified() {
         Investor investor = John();
 
-        stockMarket.registerInvestor(investor);
+        stockMarket.registerInvestorOnStock(investor, PETR4);
 
-        Stock stock = Stock.of(anyPrice());
-
-        stockMarket.pushOrder(Order.purchase(Carl(), Money.of(32), stock));
-        stockMarket.pushOrder(Order.sell(Maria(), Money.of(22), stock));
+        stockMarket.pushOrder(Carl().newPurchaseOrder(Money.of(32), PETR4));
+        stockMarket.pushOrder(Maria().newSellOrder(Money.of(22), PETR4));
 
         assertWasNotNotified(investor);
     }
@@ -67,59 +59,40 @@ class StockTest {
     void whenMatchOccursLaterOnThenInvestorIsNotifiedAsWell() {
         Investor investor = John();
 
-        Stock stock = Stock.of(anyPrice());
+        stockMarket.registerInvestorOnStock(investor, ITUB4);
 
-        stockMarket.pushOrder(Order.purchase(Carl(), Money.of(32), stock));
-        stockMarket.pushOrder(Order.sell(Maria(), Money.of(12), stock));
+        stockMarket.pushOrder(John().newPurchaseOrder(Money.of(32), ITUB4));
+        stockMarket.pushOrder(Maria().newSellOrder(Money.of(12), ITUB4));
 
         assertWasNotNotified(investor);
 
-        stockMarket.pushOrder(Order.sell(John(), Money.of(32), stock));
+        stockMarket.pushOrder(John().newSellOrder(Money.of(32), ITUB4));
 
         assertWasNotified(investor);
-    }
-
-    @Test
-    void whenInvestorIsRegisteredTwiceItShouldBeNotifiedJustOne() {
-        Investor investor = John();
-
-        stockMarket.registerInvestor(investor);
-        stockMarket.registerInvestor(investor);
-
-        Stock stock = Stock.of(anyPrice());
-
-        makeStockMatch(Maria(), stock, anyPrice());
-
-        assertWasNotified(investor);
-        assertWasNotNotified(investor);
     }
 
     @Test
     void whenMatchOccursThenStockPriceIsChanged() {
-        Stock stock = Stock.of(anyPrice());
-
         Money newPrice = Money.of(18);
 
-        makeStockMatch(Carl(), stock, newPrice);
+        makeStockMatch(PETR4, newPrice);
 
-        assertEquals(newPrice, stock.getPrice());
+        assertEquals(newPrice, PETR4.getPrice());
     }
 
     @Test
     void whenMatchOccursThenStockPriceIsTheLastMatch() {
         Investor investor = John();
 
-        stockMarket.registerInvestor(investor);
+        stockMarket.registerInvestorOnStock(investor, PETR4);
 
-        Stock stock = Stock.of(anyPrice());
-
-        makeStockMatch(Maria(), stock, Money.of(18));
+        makeStockMatch(PETR4, Money.of(18));
 
         Money newPrice = Money.of(32);
 
-        makeStockMatch(Carl(), stock, newPrice);
+        makeStockMatch(PETR4, newPrice);
 
-        assertEquals(newPrice, stock.getPrice());
+        assertEquals(newPrice, PETR4.getPrice());
     }
 
     private Investor John() {
@@ -138,9 +111,13 @@ class StockTest {
         return Money.of(0);
     }
 
-    private void makeStockMatch(final Investor investor, final Stock stock, final Money price) {
-        stockMarket.pushOrder(Order.purchase(investor, price, stock));
-        stockMarket.pushOrder(Order.sell(investor, price, stock));
+    private Investor anyInvestor() {
+        return new Investor("Unknown");
+    }
+
+    private void makeStockMatch(final Stock stock, final Money price) {
+        stockMarket.pushOrder(anyInvestor().newPurchaseOrder(price, stock));
+        stockMarket.pushOrder(anyInvestor().newSellOrder(price, stock));
     }
 
     private void assertWasNotNotified(final Investor investor) {

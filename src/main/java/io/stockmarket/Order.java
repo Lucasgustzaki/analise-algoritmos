@@ -32,6 +32,10 @@ public sealed abstract class Order permits Order.Sell, Order.Purchase {
         return stock;
     }
 
+    public Investor madeBy() {
+        return investor;
+    }
+
     public void updateStockPrice() {
         stock.updatePrice(orderPrice);
     }

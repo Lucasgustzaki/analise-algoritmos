@@ -1,31 +1,37 @@
 package io.stockmarket;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public final class StockMarket {
 
     private final List<Order> orders;
-    private final Set<Investor> investors;
+    private final Map<Investor, Set<Stock>> investors;
 
     public StockMarket() {
-        this.orders = new ArrayList<>();
-        this.investors = new HashSet<>();
+        orders = new ArrayList<>();
+        investors = new HashMap<>();
     }
 
-    public void registerInvestor(final Investor investor) {
-        investors.add(investor);
+    public void registerInvestorOnStock(final Investor investor, final Stock stock) {
+        if (investors.containsKey(investor)) {
+            investors.get(investor)
+                    .add(stock);
+
+            return;
+        }
+
+        investors.put(investor, Set.of(stock));
     }
 
     public void pushOrder(final Order order) {
         orders.add(order);
 
-        if (anyMatchFor(order))
-            notifyInvestorsAboutStockChange(order.getStock());
+        Stock stock = order.getStock();
+
+        if (anyMatchFor(order)) {
+            notifyInvestorsAboutStockChange(stock);
+        }
     }
 
     private boolean anyMatchFor(final Order order) {
@@ -54,6 +60,13 @@ public final class StockMarket {
     }
 
     private void notifyInvestorsAboutStockChange(final Stock stock) {
-        investors.forEach(investor -> investor.sendNotification(stock));
+        getInvestorsRegisteredOn(stock).forEach(investor -> investor.sendNotification(stock));
+    }
+
+    private List<Investor> getInvestorsRegisteredOn(final Stock stock) {
+        return investors.entrySet().stream()
+                .filter(entry -> entry.getValue().contains(stock))
+                .map(Map.Entry::getKey)
+                .toList();
     }
 }

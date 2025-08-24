@@ -17,16 +17,16 @@ public final class Stock {
         return new Stock(new StockCode(code), price);
     }
 
-    void updatePrice(final Money newPrice) {
-        this.price = newPrice;
-    }
-
     public Money getPrice() {
         return price;
     }
 
     public StockCode getCode() {
         return code;
+    }
+
+    void updatePrice(final Money newPrice) {
+        this.price = newPrice;
     }
 
     @Override

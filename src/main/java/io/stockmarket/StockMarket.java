@@ -21,7 +21,10 @@ public final class StockMarket {
             return;
         }
 
-        investors.put(investor, Set.of(stock));
+        Set<Stock> stocks = new HashSet<>();
+        stocks.add(stock);
+
+        investors.put(investor, stocks);
     }
 
     public void pushOrder(final Order order) {

@@ -1,30 +1,29 @@
 package io.stockmarket;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public final class StockMarket {
 
     private final List<Order> orders;
-    private final Map<Investor, Set<Stock>> investors;
+    private final Map<Stock, Set<Investor>> stockToInvestors;
 
     public StockMarket() {
         orders = new ArrayList<>();
-        investors = new HashMap<>();
+        stockToInvestors = new HashMap<>();
     }
 
     public void registerInvestorOnStock(final Investor investor, final Stock stock) {
-        if (investors.containsKey(investor)) {
-            investors.get(investor)
-                    .add(stock);
-
-            return;
-        }
-
-        Set<Stock> stocks = new HashSet<>();
-        stocks.add(stock);
-
-        investors.put(investor, stocks);
+        stockToInvestors
+            .computeIfAbsent(stock, k -> new HashSet<>())
+            .add(investor);
     }
 
     public void pushOrder(final Order order) {
@@ -63,13 +62,8 @@ public final class StockMarket {
     }
 
     private void notifyInvestorsAboutStockChange(final Stock stock) {
-        getInvestorsRegisteredOn(stock).forEach(investor -> investor.sendNotification(stock));
-    }
-
-    private List<Investor> getInvestorsRegisteredOn(final Stock stock) {
-        return investors.entrySet().stream()
-                .filter(entry -> entry.getValue().contains(stock))
-                .map(Map.Entry::getKey)
-                .toList();
+        stockToInvestors
+            .getOrDefault(stock, Collections.emptySet())
+            .forEach(investor -> investor.sendNotification(stock));
     }
 }

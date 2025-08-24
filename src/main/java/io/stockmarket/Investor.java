@@ -1,26 +1,29 @@
 package io.stockmarket;
 
+import java.util.Optional;
 import java.util.Stack;
 
 public final class Investor {
 
+    private final String name;
     private final Stack<Notification> notifications;
 
-    public Investor() {
+    public Investor(final String name) {
+        this.name = name;
         this.notifications = new Stack<>();
     }
 
     public void sendNotification(final Stock stock) {
-        notifications.push(new Notification(stock));
+        Notification notification = new Notification(stock);
+
+        notifications.push(notification);
     }
 
-    public boolean wasNotified() {
-        if (notifications.isEmpty()) {
-            return false;
+    public Optional<Notification> getLastNotification() {
+        if  (notifications.isEmpty()) {
+            return Optional.empty();
         }
 
-        notifications.pop();
-
-        return true;
+        return Optional.of(notifications.pop());
     }
 }

@@ -1,6 +1,6 @@
 package io.stockmarket;
 
-public class Stock {
+public final class Stock {
 
     private final StockCode code;
 
@@ -15,7 +15,7 @@ public class Stock {
         return new Stock(StockCode.DEFAULT, price);
     }
 
-    protected void updatePrice(final Money newPrice) {
+    void updatePrice(final Money newPrice) {
         this.price = newPrice;
     }
 
@@ -27,7 +27,7 @@ public class Stock {
         return code;
     }
 
-    public static final class StockCode {
+    private static final class StockCode {
 
         private static final StockCode DEFAULT = new StockCode("DEFAULT");
 

@@ -14,25 +14,13 @@ public final class Money {
     private final Currency currency;
     private final BigDecimal amount;
 
-    public Money(Currency currency, BigDecimal amount) {
+    private Money(final Currency currency, final BigDecimal amount) {
         this.currency = currency;
         this.amount = amount;
     }
 
-    public Money(final BigDecimal amount) {
-        this(DEFAULT_CURRENCY, amount);
-    }
-
     public static Money of(final double amount) {
-        return new Money(BigDecimal.valueOf(amount));
-    }
-
-    public static Money zero() {
-        return new Money(DEFAULT_CURRENCY, BigDecimal.ZERO);
-    }
-
-    public Money add(final Money toAdd) {
-        return new Money(this.currency, this.amount.add(toAdd.amount));
+        return new Money(DEFAULT_CURRENCY, BigDecimal.valueOf(amount));
     }
 
     @Override

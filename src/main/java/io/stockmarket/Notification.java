@@ -1,6 +1,6 @@
 package io.stockmarket;
 
-public class Notification {
+public final class Notification {
 
     private static final String PRINT_MESSAGE = "[UPDATE] Stock market notification for stock: %s with price: %s";
 

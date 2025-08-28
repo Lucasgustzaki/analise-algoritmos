@@ -1,0 +1,5 @@
+**/.idea
+**/target
+
+# custom libs
+**/*.jar

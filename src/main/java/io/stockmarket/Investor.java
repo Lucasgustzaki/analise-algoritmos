@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Stack;
 
-public final class Investor {
+public final class Investor implements StockNotifiable {
 
     private final String name;
     private final Stack<Notification> notifications;
@@ -22,7 +22,8 @@ public final class Investor {
         return Order.purchase(this, money, stock);
     }
 
-    public void sendNotification(final Stock stock) {
+    @Override
+    public void notify(final Stock stock) {
         Notification notification = new Notification(stock);
 
         notifications.push(notification);

@@ -13,17 +13,17 @@ import java.util.function.Predicate;
 public final class StockMarket {
 
     private final List<Order> orders;
-    private final Map<Stock, Set<Investor>> stockToInvestors;
+    private final Map<Stock, Set<StockNotifiable>> stockToInvestors;
 
     public StockMarket() {
         orders = new ArrayList<>();
         stockToInvestors = new HashMap<>();
     }
 
-    public void registerInvestorOnStock(final Investor investor, final Stock stock) {
+    public void addNotifiable(final StockNotifiable stockNotifiable, final Stock stock) {
         stockToInvestors
             .computeIfAbsent(stock, k -> new HashSet<>())
-            .add(investor);
+            .add(stockNotifiable);
     }
 
     public void pushOrder(final Order order) {
@@ -64,6 +64,6 @@ public final class StockMarket {
     private void notifyInvestorsAboutStockChange(final Stock stock) {
         stockToInvestors
             .getOrDefault(stock, Collections.emptySet())
-            .forEach(investor -> investor.sendNotification(stock));
+            .forEach(stockNotifiable -> stockNotifiable.notify(stock));
     }
 }

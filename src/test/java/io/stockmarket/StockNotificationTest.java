@@ -25,7 +25,7 @@ class StockNotificationTest {
     void whenInvestorIsRegisteredAndMatchOnStockMarketThenInvestorIsNotified() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, PETR4);
+        stockMarket.addNotifiable(investor, PETR4);
 
         makeStockMatch(PETR4, anyPrice());
 
@@ -36,8 +36,8 @@ class StockNotificationTest {
     void whenInvestorIsRegisteredOnMultipleStocksThenNotifyAboutAllIfMatches() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, PETR4);
-        stockMarket.registerInvestorOnStock(investor, ITUB4);
+        stockMarket.addNotifiable(investor, PETR4);
+        stockMarket.addNotifiable(investor, ITUB4);
 
         makeStockMatch(PETR4, anyPrice());
         
@@ -52,8 +52,8 @@ class StockNotificationTest {
     void whenInvestorIsRegisteredOnMultipleStocksThenKeepNotificationOrderTheSameAsMatchOrder() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, PETR4);
-        stockMarket.registerInvestorOnStock(investor, ITUB4);
+        stockMarket.addNotifiable(investor, PETR4);
+        stockMarket.addNotifiable(investor, ITUB4);
 
         makeStockMatch(PETR4, anyPrice());
         makeStockMatch(ITUB4, anyPrice());
@@ -66,11 +66,11 @@ class StockNotificationTest {
     void whenMultipleInvestorsAreRegisteredOnTheSameStockThenNotifyAll() {
         Investor john = John();
 
-        stockMarket.registerInvestorOnStock(john, PETR4);
+        stockMarket.addNotifiable(john, PETR4);
 
         Investor carl = Carl();
 
-        stockMarket.registerInvestorOnStock(carl, PETR4);
+        stockMarket.addNotifiable(carl, PETR4);
 
         makeStockMatch(PETR4, anyPrice());
 
@@ -82,8 +82,8 @@ class StockNotificationTest {
     void whenInvestorIsRegisteredMultipleTimesForSameStockThenSendJustOneNotification() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, PETR4);
-        stockMarket.registerInvestorOnStock(investor, PETR4);
+        stockMarket.addNotifiable(investor, PETR4);
+        stockMarket.addNotifiable(investor, PETR4);
 
         makeStockMatch(PETR4, anyPrice());
 
@@ -96,7 +96,7 @@ class StockNotificationTest {
     void whenInvestorIsRegisteredButMatchOccursForDifferentStockThenIsNotNotified() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, ITUB4);
+        stockMarket.addNotifiable(investor, ITUB4);
 
         makeStockMatch(PETR4, anyPrice());
 
@@ -107,7 +107,7 @@ class StockNotificationTest {
     void whenInvestorIsRegisterButNoMatchOnStocksPriceThenInvestorIsNotNotified() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, PETR4);
+        stockMarket.addNotifiable(investor, PETR4);
 
         stockMarket.pushOrder(Carl().newPurchaseOrder(Money.of(32), PETR4));
         stockMarket.pushOrder(Maria().newSellOrder(Money.of(22), PETR4));
@@ -119,7 +119,7 @@ class StockNotificationTest {
     void whenMatchOccursLaterOnThenInvestorIsNotifiedAsWell() {
         Investor investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, ITUB4);
+        stockMarket.addNotifiable(investor, ITUB4);
 
         stockMarket.pushOrder(John().newPurchaseOrder(Money.of(32), ITUB4));
         stockMarket.pushOrder(Maria().newSellOrder(Money.of(12), ITUB4));
@@ -152,9 +152,9 @@ class StockNotificationTest {
 
     @Test
     void whenMatchOccursThenStockPriceIsTheLastMatch() {
-        Investor investor = John();
+        StockNotifiable investor = John();
 
-        stockMarket.registerInvestorOnStock(investor, PETR4);
+        stockMarket.addNotifiable(investor, PETR4);
 
         makeStockMatch(PETR4, Money.of(18));
 

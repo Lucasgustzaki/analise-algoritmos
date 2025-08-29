@@ -4,8 +4,8 @@ import br.furb.analise.algoritmos.LampadaPhellipes;
 
 public final class LampPhellipesAdapter implements LampController {
 
-    private static final int MAX = 100;
-    private static final int MIN = 0;
+    private static final Luminosity MAX = Luminosity.of(100);
+    private static final Luminosity MIN = Luminosity.of(0);
 
     private final LampadaPhellipes lamp;
 
@@ -20,11 +20,11 @@ public final class LampPhellipesAdapter implements LampController {
 
     @Override
     public void on() {
-        lamp.setIntensidade(MAX);
+        lamp.setIntensidade(MAX.get());
     }
 
     @Override
     public void off() {
-        lamp.setIntensidade(MIN);
+        lamp.setIntensidade(MIN.get());
     }
 }

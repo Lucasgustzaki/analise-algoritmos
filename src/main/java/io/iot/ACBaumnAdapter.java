@@ -31,41 +31,41 @@ public final class ACBaumnAdapter implements ACController {
     @Override
     public void increaseTemperature() {
         if (!isOn()) {
-            throw new DeviceOff();
+            throw new DeviceOffException();
         }
 
         try {
             ac.definirTemperatura(temp.increaseBy(INTERVAL).get());
         } catch (Exception e) {
-            throw new MaxTemperatureReached();
+            throw new MaxTemperatureReachedException();
         }
     }
 
     @Override
     public void decreaseTemperature() {
         if (!isOn()) {
-            throw new DeviceOff();
+            throw new DeviceOffException();
         }
 
         try {
             ac.definirTemperatura(temp.decreaseBy(INTERVAL).get());
         } catch (Exception e) {
-            throw new MinTemperatureReached();
+            throw new MinTemperatureReachedException();
         }
     }
 
     @Override
     public void setTemperature(Temperature temperature) {
         if (!isOn()) {
-            throw new DeviceOff();
+            throw new DeviceOffException();
         }
 
         if (temperature.isHigherThan(MAX)) {
-            throw new MaxTemperatureReached();
+            throw new MaxTemperatureReachedException();
         }
 
         if (temperature.isLowerThan(MIX)) {
-            throw new MinTemperatureReached();
+            throw new MinTemperatureReachedException();
         }
 
         try {

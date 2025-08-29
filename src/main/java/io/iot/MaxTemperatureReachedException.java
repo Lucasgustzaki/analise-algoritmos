@@ -1,10 +1,10 @@
 package io.iot;
 
-public final class MaxTemperatureReached extends RuntimeException {
+public final class MaxTemperatureReachedException extends RuntimeException {
 
     private static final String MESSAGE = "Maximum temperature reached.";
 
-    public MaxTemperatureReached() {
+    public MaxTemperatureReachedException() {
         super(MESSAGE);
     }
 }

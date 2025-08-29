@@ -30,7 +30,7 @@ public final class ACGellaKazaAdapter implements ACController {
         try {
             ac.aumentarTemperatura();
         } catch (Exception e) {
-            throw new MaxTemperatureReached();
+            throw new MaxTemperatureReachedException();
         }
     }
 
@@ -39,7 +39,7 @@ public final class ACGellaKazaAdapter implements ACController {
         try {
             ac.diminuirTemperatura();
         } catch (Exception e) {
-            throw new MinTemperatureReached();
+            throw new MinTemperatureReachedException();
         }
     }
 

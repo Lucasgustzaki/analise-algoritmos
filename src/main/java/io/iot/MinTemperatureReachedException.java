@@ -1,10 +1,10 @@
 package io.iot;
 
-public class MinTemperatureReached extends RuntimeException {
+public class MinTemperatureReachedException extends RuntimeException {
 
     private static final String MESSAGE = "Minimum temperature reached.";
 
-    public MinTemperatureReached() {
+    public MinTemperatureReachedException() {
         super(MESSAGE);
     }
 }

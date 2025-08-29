@@ -1,10 +1,10 @@
 package io.iot;
 
-public class DeviceOff extends RuntimeException {
+public class DeviceOffException extends RuntimeException {
 
     private static final String MESSAGE = "Cannot operate on off device.";
 
-    public DeviceOff() {
+    public DeviceOffException() {
         super(MESSAGE);
     }
 }

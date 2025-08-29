@@ -13,7 +13,7 @@ public final class Temperature {
     }
 
     public static Temperature getDefault() {
-        return new Temperature(22);
+        return new Temperature(25);
     }
 
     public Temperature increaseBy(int toIncrease) {
@@ -26,5 +26,9 @@ public final class Temperature {
 
     public Temperature decreaseBy(int toDecrease) {
         return new Temperature(this.Celsius - toDecrease);
+    }
+
+    public boolean isDefault() {
+        return this.Celsius == 25;
     }
 }

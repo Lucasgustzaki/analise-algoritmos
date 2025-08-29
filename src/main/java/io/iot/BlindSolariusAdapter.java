@@ -11,6 +11,11 @@ public final class BlindSolariusAdapter implements BlindController {
     }
 
     @Override
+    public boolean isOpen() {
+        return blind.estaAberta();
+    }
+
+    @Override
     public void open() {
         blind.subirPersiana();
     }

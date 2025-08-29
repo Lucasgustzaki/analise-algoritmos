@@ -11,6 +11,11 @@ public final class BlindNatLightAdapter implements BlindController {
     }
 
     @Override
+    public boolean isOpen() {
+        return blind.estaPalhetaAberta() && blind.estaPalhetaErguida();
+    }
+
+    @Override
     public void open() {
         blind.abrirPalheta();
 

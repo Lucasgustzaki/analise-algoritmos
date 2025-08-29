@@ -14,6 +14,11 @@ public final class LampPhellipesAdapter implements LampController {
     }
 
     @Override
+    public boolean isOn() {
+        return lamp.getIntensidade() > 0;
+    }
+
+    @Override
     public void on() {
         lamp.setIntensidade(MAX);
     }

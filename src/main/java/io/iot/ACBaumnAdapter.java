@@ -64,7 +64,13 @@ public final class ACBaumnAdapter implements ACController {
         }
     }
 
-    private boolean isOn() {
+    @Override
+    public Temperature getTemperature() {
+        return Temperature.of(ac.getTemperatura());
+    }
+
+    @Override
+    public boolean isOn() {
         return ac.estaLigado();
     }
 }

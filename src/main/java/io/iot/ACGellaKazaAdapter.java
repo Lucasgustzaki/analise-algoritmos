@@ -11,6 +11,11 @@ public final class ACGellaKazaAdapter implements ACController {
     }
 
     @Override
+    public boolean isOn() {
+        return ac.estaLigado();
+    }
+
+    @Override
     public void on() {
         ac.ativar();
     }
@@ -53,6 +58,11 @@ public final class ACGellaKazaAdapter implements ACController {
                 decreaseTemperature();
             }
         }
+    }
+
+    @Override
+    public Temperature getTemperature() {
+        return Temperature.of(ac.getTemperatura());
     }
 
     private int temp() {

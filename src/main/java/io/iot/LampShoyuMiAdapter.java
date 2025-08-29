@@ -11,6 +11,11 @@ public final class LampShoyuMiAdapter implements LampController {
     }
 
     @Override
+    public boolean isOn() {
+        return lamp.estaLigada();
+    }
+
+    @Override
     public void on() {
         lamp.ligar();
     }

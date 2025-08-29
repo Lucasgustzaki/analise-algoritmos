@@ -16,7 +16,7 @@ public final class Temperature {
         return new Temperature(25);
     }
 
-    public Temperature increaseBy(int toIncrease) {
+    public Temperature increaseBy(final int toIncrease) {
         return new Temperature(this.Celsius + toIncrease);
     }
 
@@ -24,11 +24,19 @@ public final class Temperature {
         return Celsius;
     }
 
-    public Temperature decreaseBy(int toDecrease) {
+    public Temperature decreaseBy(final int toDecrease) {
         return new Temperature(this.Celsius - toDecrease);
     }
 
     public boolean isDefault() {
         return this.Celsius == 25;
+    }
+
+    public boolean isHigherThan(final Temperature some) {
+        return this.Celsius > some.Celsius;
+    }
+
+    public boolean isLowerThan(final Temperature some) {
+        return this.Celsius < some.Celsius;
     }
 }

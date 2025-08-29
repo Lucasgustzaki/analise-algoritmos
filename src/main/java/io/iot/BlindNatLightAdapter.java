@@ -22,7 +22,7 @@ public final class BlindNatLightAdapter implements BlindController {
         try {
             blind.subirPalheta();
         } catch (Exception e) {
-            // ignored
+            // ignored: precondition already checked
         }
     }
 
@@ -33,7 +33,7 @@ public final class BlindNatLightAdapter implements BlindController {
         try {
             blind.fecharPalheta();
         } catch (java.lang.Exception e) {
-            // ignored
+            // ignored: precondition already checked
         }
     }
 }

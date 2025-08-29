@@ -4,6 +4,9 @@ import br.furb.analise.algoritmos.ArCondicionadoVentoBaumn;
 
 public final class ACBaumnAdapter implements ACController {
 
+    private static final Temperature MAX = Temperature.of(35);
+    private static final Temperature MIX = Temperature.of(15);
+
     private static final int INTERVAL = 5;
 
     private final Temperature temp;
@@ -57,10 +60,18 @@ public final class ACBaumnAdapter implements ACController {
             throw new DeviceOff();
         }
 
+        if (temperature.isHigherThan(MAX)) {
+            throw new MaxTemperatureReached();
+        }
+
+        if (temperature.isLowerThan(MIX)) {
+            throw new MinTemperatureReached();
+        }
+
         try {
             ac.definirTemperatura(temperature.get());
         } catch (Exception e) {
-            // TODO
+            // ignore: preconditions already checked
         }
     }
 

@@ -1,0 +1,87 @@
+package io.iot;
+
+import br.furb.analise.algoritmos.ArCondicionadoVentoBaumn;
+
+public final class ACBaumnAdapter implements ACController {
+
+    private static final Temperature MAX = Temperature.of(35);
+    private static final Temperature MIX = Temperature.of(15);
+
+    private static final int INTERVAL = 5;
+
+    private final Temperature temp;
+    private final ArCondicionadoVentoBaumn ac;
+
+    public ACBaumnAdapter() {
+        temp = Temperature.getDefault();
+
+        ac = new ArCondicionadoVentoBaumn();
+    }
+
+    @Override
+    public void on() {
+        ac.ligar();
+    }
+
+    @Override
+    public void off() {
+        ac.desligar();
+    }
+
+    @Override
+    public void increaseTemperature() {
+        if (!isOn()) {
+            throw new DeviceOffException();
+        }
+
+        try {
+            ac.definirTemperatura(temp.increaseBy(INTERVAL).get());
+        } catch (Exception e) {
+            throw new MaxTemperatureReachedException();
+        }
+    }
+
+    @Override
+    public void decreaseTemperature() {
+        if (!isOn()) {
+            throw new DeviceOffException();
+        }
+
+        try {
+            ac.definirTemperatura(temp.decreaseBy(INTERVAL).get());
+        } catch (Exception e) {
+            throw new MinTemperatureReachedException();
+        }
+    }
+
+    @Override
+    public void setTemperature(Temperature temperature) {
+        if (!isOn()) {
+            throw new DeviceOffException();
+        }
+
+        if (temperature.isHigherThan(MAX)) {
+            throw new MaxTemperatureReachedException();
+        }
+
+        if (temperature.isLowerThan(MIX)) {
+            throw new MinTemperatureReachedException();
+        }
+
+        try {
+            ac.definirTemperatura(temperature.get());
+        } catch (Exception e) {
+            // ignore: preconditions already checked
+        }
+    }
+
+    @Override
+    public Temperature getTemperature() {
+        return Temperature.of(ac.getTemperatura());
+    }
+
+    @Override
+    public boolean isOn() {
+        return ac.estaLigado();
+    }
+}
